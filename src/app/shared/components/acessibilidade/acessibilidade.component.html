@@ -1,0 +1,84 @@
+<div class="dropdown">
+  <fa-icon
+    title="Acessibilidade"
+    [icon]="faUniversalAccess"
+    class="fa-2x text-warning acessibility-button"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    data-bs-auto-close="outside"
+  ></fa-icon>
+  <div class="d-block">
+    <ul class="dropdown-menu dropdown-menu-end toolbar-acessibility p-2">
+      <li class="center-items py-2 text-secondary">
+        <strong>ACESSIBILIDADE</strong>
+      </li>
+      <li class="py-2 small">
+        <strong>Tamanho da Fonte</strong>
+      </li>
+      <div class="item d-inline-flex">
+        <a
+          class="btn btn-light text-secondary mx-1 fw-bold"
+          style="width: 2.688rem"
+          title="Diminuir Fonte"
+          (click)="setFontSize('a-')"
+          >A-</a
+        >
+        <fa-icon
+          class="btn btn-light text-secondary mx-1"
+          style="width: 2.688rem"
+          title="Tamanho original"
+          (click)="setFontSize('a')"
+          [icon]="faRotate"
+        ></fa-icon>
+        <a
+          class="btn btn-light text-secondary mx-1 fw-bold"
+          style="width: 2.688rem"
+          title="Aumentar fonte"
+          (click)="setFontSize('a+')"
+          >A+</a
+        >
+      </div>
+      <li class="py-2 small">
+        <strong>Controle de zoom</strong>
+      </li>
+      <div class="item">
+        <fa-icon
+          class="btn btn-light text-secondary mx-1 fw-bold"
+          style="width: 2.688rem"
+          title="Dinimuir Zoom"
+          (click)="setFontSize('a-')"
+          [icon]="faMagnifyingGlassMinus"
+        >
+        </fa-icon>
+
+        <fa-icon
+          class="btn btn-light text-secondary mx-1 fw-bold"
+          style="width: 2.688rem"
+          title="Tamanho Original"
+          (click)="setFontSize('a')"
+          [icon]="faRotate"
+        >
+        </fa-icon>
+        <fa-icon
+          class="btn btn-light text-secondary mx-1 fw-bold"
+          style="width: 2.688rem"
+          title="Aumentar Zoom"
+          (click)="setFontSize('a+')"
+          [icon]="faMagnifyingGlassPlus"
+        ></fa-icon>
+      </div>
+      <li class="py-2 small">
+        <strong>Contraste</strong>
+      </li>
+      <div class="item">
+        <fa-icon
+          class="btn btn-light text-secondary mx-1 fw-bold"
+          style="width: 2.688rem"
+          title="Alterar Contraste"
+          (click)="contraste()"
+          [icon]="faCircleHalfStroke"
+        ></fa-icon>
+      </div>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,436 @@
+<div class="container">
+  <app-breadcrumb
+    [paginaAnterior]="'Plantão Judicial'"
+    [paginaAtual]="'Lista de Plantões Turma Recursal'"
+  ></app-breadcrumb>
+  <div class="d-flex align-items-center justify-content-end m-3">
+    <button
+      [appHasPermission]="['PlantaoJudicial-ManterPlantao-TurmaRecursal']"
+      title="Cadastrar Plantão"
+      [routerLink]="'/home/plantao/cadastrar-plantao-turma-recursal'"
+      type="button"
+      class="btn btn-primary"
+      style="background: var(--bs-primary)"
+    >
+      Cadastrar Plantão Turma Recursal
+      <fa-icon [icon]="faPlus"></fa-icon>
+    </button>
+  </div>
+  <div class="row p-3">
+    <div class="accordion" id="accordionExample">
+      <div class="accordion-item shadow">
+        <h2 class="accordion-header" id="headingOne">
+          <button
+            class="accordion-button fw-bold"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseOne"
+            aria-expanded="true"
+            aria-controls="collapseOne"
+          >
+            Filtro de Plantões Turma Recursal
+          </button>
+        </h2>
+        <div
+          id="collapseOne"
+          class="accordion-collapse collapse show"
+          aria-labelledby="headingOne"
+          data-bs-parent="#accordionExample"
+        >
+          <div class="accordion-body">
+            <div class="row">
+              <div class="col-lg-6 mb-0 mb-3">
+                <label>Órgão Julgador*</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="filtroLista.orgaoJulgador"
+                  placeholder="Órgão Julgador"
+                />
+              </div>
+              <div class="flex col-lg-3 justify-content-center">
+                <label> Data Inicial do Plantão</label>
+                <div class="input-group">
+                  <input
+                    type="date"
+                    class="form-control"
+                    [(ngModel)]="filtroLista.dataInicial"
+                  />
+                </div>
+              </div>
+              <div class="flex col-lg-3 justify-content-center">
+                <label> Data Final do Plantão</label>
+                <div class="input-group">
+                  <input
+                    type="date"
+                    class="form-control"
+                    [(ngModel)]="filtroLista.dataFinal"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end">
+              <div class="border-bottom-0">
+                <button
+                  type="button"
+                  title="Limpar campos"
+                  class="mt-3 btn btn-light border btn-block"
+                  (click)="limparPesquisaFiltro()"
+                >
+                  Limpar Pesquisa
+                </button>
+                <button
+                  (click)="filtrar()"
+                  [disabled]="!formInvalidFiltro()"
+                  type="button"
+                  title="Pesquisar"
+                  [ngClass]="{
+                    'mt-3 btn btn-success btn-block ms-4 ': true
+                  }"
+                >
+                  <span
+                    [ngClass]="{
+                      'spinner-grow spinner-grow-sm me-1': loadingFiltro
+                    }"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  <span [ngClass]="{ 'visually-hidden': loadingFiltro }"></span
+                  >{{ loadingFiltro ? "Pesquisando..." : "Pesquisar" }}
+                  <fa-icon [icon]="faSearch"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card m-3 shadow">
+    <app-botao-voltar-header-card
+      [texto]="'Lista de Plantões Turma Recursal'"
+    ></app-botao-voltar-header-card>
+    <div class="card-body show">
+      <div class="row">
+        <div class="col-md-12">
+          <div
+            class="table-responsive"
+            *ngIf="
+              !loading &&
+              authorizationService.plantaoJudicialTurmaRecursal() &&
+              listaPlantoes.length > 0
+            "
+          >
+            <table style="min-width: 1150px" class="table table-hover">
+              <thead class="bg-light">
+                <tr>
+                  <th [width]="150" scope="col">Data do Cadastro</th>
+                  <th [width]="150" scope="col">Data Inicial</th>
+                  <th [width]="150" scope="col">Data Final</th>
+                  <th [width]="150" scope="col">Órgão Julgador</th>
+                  <th [width]="200" scope="col">Magistrado</th>
+                  <th [width]="200" scope="col">Telefone do plantão</th>
+
+                  <th
+                    class="col text-center fixed-right-column"
+                    style="width: 150px"
+                  ></th>
+                </tr>
+              </thead>
+              <tbody *ngIf="!loading">
+                <tr
+                  *ngFor="
+                    let item of listaPlantoes
+                      | paginate
+                        : {
+                            itemsPerPage: 10,
+                            currentPage: page,
+                            totalItems: total
+                          }
+                  "
+                >
+                  <td style="vertical-align: middle">
+                    {{
+                      item.dataCriacao
+                        ? (item.dataCriacao | date : "dd/MM/yyyy")
+                        : "Data não disponível"
+                    }}
+                  </td>
+
+                  <td style="vertical-align: middle">
+                    {{ item.dataInicial | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td style="vertical-align: middle">
+                    {{ item.dataFinal | date : "dd/MM/yyyy" }}
+                  </td>
+                  <td style="vertical-align: middle">
+                    {{ item?.orgaoJulgador }}
+                  </td>
+                  <td style="vertical-align: middle">
+                    {{ item.magistrado }}
+                  </td>
+                  <td style="vertical-align: middle">
+                    {{ item.telefonePlantao | mask : "(00) 0 0000-0000" }}
+                  </td>
+
+                  <td
+                    class="col text-end fixed-right-column"
+                    style="width: 150px"
+                  >
+                    <button
+                      *ngIf="item.alteracao == 'SIM'"
+                      (click)="dialogAlteracao(item)"
+                      type="button"
+                      class="btn border-0 bg-transparent text-secondary"
+                      pTooltip="Este ítem sofreu alterações após o seu cadastro!"
+                    >
+                      <fa-icon
+                        [icon]="faExclamationTriangle"
+                        class="text-warning"
+                      ></fa-icon>
+                    </button>
+                    <button
+                      (click)="showDialog(item)"
+                      type="button"
+                      class="btn border-0 bg-transparent text-secondary"
+                      title="Editar Plantão"
+                      label="Show"
+                    >
+                      <fa-icon [icon]="faPenToSquare"></fa-icon></button
+                    ><button
+                      (click)="excluirPlantao(item.plantaoID)"
+                      type="button"
+                      class="btn border-0 bg-transparent text-secondary"
+                      title="Excluir Plantão"
+                    >
+                      <fa-icon [icon]="faTrashCan"></fa-icon>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="card flex justify-content-center" *ngIf="visible">
+              <p-dialog
+                header="Histórico de alterações"
+                (onHide)="limparModalAlteracao()"
+                [(visible)]="visible"
+                [maximizable]="true"
+                [style]="{ width: '50vw' }"
+                [modal]="true"
+              >
+                <div class="row">
+                  <h5>PLANTÃO FORENSE TURMA RECURSAL</h5>
+                </div>
+                <span>
+                  Plantão: de
+
+                  <b>
+                    {{ dataInicial | date : "dd/MM/yyyy" }}
+                  </b>
+                  a
+                  <b> {{ dataFinal | date : "dd/MM/yyyy" }}</b>
+                </span>
+                <div class="pt-3">
+                  <div class="table-responsive">
+                    <table class="table w-100">
+                      <thead>
+                        <tr>
+                          <th>Data/Hora</th>
+                          <th>Justificativa</th>
+                          <th>Usuário responsável</th>
+                          <th>Alteração</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of alteracoesRecentes">
+                          <td>
+                            {{ item.dataAlteracao | date : "dd/MM/yyy HH:mm" }}
+                          </td>
+                          <td>{{ item.justificativa }}</td>
+                          <td>{{ item.responsavel }}</td>
+                          <td>
+                            <ng-container
+                              *ngIf="
+                                item.campoAlterado == 'dataInicial' ||
+                                  item.campoAlterado == 'dataFinal';
+                                else semDatas
+                              "
+                            >
+                              {{ item.valorNovo | date : "dd/MM/yyyy HH:mm"
+                              }}<br />
+                              <small
+                                ><b>Anterior:</b>
+                                {{
+                                  item.valorAntigo | date : "dd/MM/yyyy HH:mm"
+                                }}</small
+                              >
+                            </ng-container>
+                            <ng-template #semDatas>
+                              {{ item.valorNovo }}<br />
+                              <small
+                                ><b>Anterior:</b> {{ item.valorAntigo }}</small
+                              >
+                            </ng-template>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </p-dialog>
+            </div>
+            <div *ngIf="listaPlantoes.length > 0" class="text-center">
+              <pagination-controls
+                (pageChange)="carregarPagina((page = $event))"
+                previousLabel="Anterior"
+                nextLabel="Próximo"
+              ></pagination-controls>
+            </div>
+
+            <div *ngIf="editando" class="card flex justify-content-center">
+              <p-dialog
+                label="Show"
+                header="Edição de Plantão Turma Recursal"
+                (onHide)="atualizarListagem()"
+                [modal]="true"
+                [(visible)]="loadingModalEdicao"
+                [style]="{ width: '60vw', height: '40vw' }"
+                [maximizable]="true"
+              >
+                <div class="row">
+                  <div class="row">
+                    <div class="col-lg-3 mb-0 mb-3">
+                      <label>Data Inicial*</label>
+                      <div class="input-group">
+                        <input
+                          type="date"
+                          class="form-control"
+                          placeholder="Data Inicial"
+                          [(ngModel)]="plantaoRecursalModel.dataInicial"
+                          [ngClass]="{
+                            'is-valid': plantaoRecursalModel.dataInicial != ''
+                          }"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-3 mb-0 mb-3">
+                      <label>Data Final*</label>
+                      <div class="input-group">
+                        <input
+                          type="date"
+                          class="form-control"
+                          placeholder="Data Final"
+                          [(ngModel)]="plantaoRecursalModel.dataFinal"
+                          [ngClass]="{
+                            'is-valid': plantaoRecursalModel.dataFinal != ''
+                          }"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-6 mb-0 mb-3">
+                      <label>Órgão Julgador*</label>
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Descrição do gabinete"
+                          [(ngModel)]="plantaoRecursalModel.orgaoJulgador"
+                          [ngClass]="{
+                            'is-valid': plantaoRecursalModel.orgaoJulgador != ''
+                          }"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-8 mb-0 mb-3">
+                      <label>Magistrado*</label>
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Nome do Magistrado"
+                          [(ngModel)]="plantaoRecursalModel.magistrado"
+                          [ngClass]="{
+                            'is-valid': plantaoRecursalModel.magistrado != ''
+                          }"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-4 mb-0 mb-3">
+                      <label>Telefone do Plantão*</label>
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="(00) 0 0000-0000"
+                          [(ngModel)]="plantaoRecursalModel.telefonePlantao"
+                          [mask]="'(00) 0 0000-0000'"
+                          [ngClass]="{
+                            'is-valid': validadorTelefone(
+                              plantaoRecursalModel.telefonePlantao
+                            ),
+                            'is-invalid':
+                              !validadorTelefone(
+                                plantaoRecursalModel.telefonePlantao
+                              ) && plantaoRecursalModel.telefonePlantao != ''
+                          }"
+                        />
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label
+                        for="exampleFormControlTextarea1"
+                        class="form-label"
+                        >Justificativa*</label
+                      >
+                      <textarea
+                        [maxlength]="256"
+                        [(ngModel)]="plantaoRecursalModel.justificativa"
+                        [ngClass]="{
+                          'is-valid': plantaoRecursalModel.justificativa != ''
+                        }"
+                        class="form-control"
+                        id="exampleFormControlTextarea1"
+                        rows="3"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <ng-template pTemplate="footer">
+                  <button class="btn btn-danger me-3" (click)="limparCampos()">
+                    Limpar Campos
+                  </button>
+                  <button
+                    class="btn btn-secondary"
+                    (click)="salvar()"
+                    [disabled]="loadingBotaoSalvar || !formInvalid()"
+                  >
+                    <span
+                      [ngClass]="{
+                        'spinner-grow spinner-grow-sm me-1': loadingBotaoSalvar
+                      }"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    <span
+                      [ngClass]="{ 'visually-hidden': loadingBotaoSalvar }"
+                    ></span
+                    >{{ loadingBotaoSalvar ? "Salvando..." : "Salvar Edição" }}
+                  </button>
+                </ng-template>
+              </p-dialog>
+            </div>
+          </div>
+          <div *ngIf="listaPlantoes.length == 0 && !loading && !filtrado">
+            <p>Nenhum Plantão cadastrado!</p>
+          </div>
+          <div *ngIf="total == 0 && filtrado && !loading">
+            <p>Nenhum plantão encontrado com os campos informados!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

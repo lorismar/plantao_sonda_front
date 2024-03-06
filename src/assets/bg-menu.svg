@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="250" height="1007" viewBox="0 0 250 1007">
+  <defs>
+    <clipPath id="clip-bg-menu">
+      <rect width="250" height="1007"/>
+    </clipPath>
+  </defs>
+  <g id="bg-menu" clip-path="url(#clip-bg-menu)">
+    <g id="Grupo_143" data-name="Grupo 143">
+      <g id="Retângulo_23" data-name="Retângulo 23" transform="translate(-1578.921 1046.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+        <rect width="1827" height="994" stroke="none"/>
+        <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+      </g>
+      <g id="Retângulo_24" data-name="Retângulo 24" transform="translate(-1710.921 1046.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+        <rect width="1827" height="994" stroke="none"/>
+        <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+      </g>
+      <g id="Retângulo_25" data-name="Retângulo 25" transform="translate(-1858.921 1046.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+        <rect width="1827" height="994" stroke="none"/>
+        <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+      </g>
+    </g>
+  </g>
+</svg>

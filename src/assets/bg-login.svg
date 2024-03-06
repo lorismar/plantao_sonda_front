@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920" height="1007" viewBox="0 0 1920 1007">
+  <defs>
+    <clipPath id="clip-bg-login">
+      <rect width="1920" height="1007"/>
+    </clipPath>
+  </defs>
+  <g id="bg-login" clip-path="url(#clip-bg-login)">
+    <g id="Retângulo_8" data-name="Retângulo 8" transform="translate(-1188.921 1046.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+      <rect width="1827" height="994" stroke="none"/>
+      <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+    </g>
+    <g id="Retângulo_11" data-name="Retângulo 11" transform="translate(466.079 1254.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+      <rect width="1827" height="994" stroke="none"/>
+      <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+    </g>
+    <g id="Retângulo_7" data-name="Retângulo 7" transform="translate(-1320.921 1046.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+      <rect width="1827" height="994" stroke="none"/>
+      <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+    </g>
+    <g id="Retângulo_9" data-name="Retângulo 9" transform="translate(334.079 1254.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+      <rect width="1827" height="994" stroke="none"/>
+      <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+    </g>
+    <g id="Retângulo_6" data-name="Retângulo 6" transform="translate(-1468.921 1046.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+      <rect width="1827" height="994" stroke="none"/>
+      <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+    </g>
+    <g id="Retângulo_10" data-name="Retângulo 10" transform="translate(186.079 1254.908) rotate(-42)" fill="#fff" stroke="#707070" stroke-width="1" opacity="0.03">
+      <rect width="1827" height="994" stroke="none"/>
+      <rect x="0.5" y="0.5" width="1826" height="993" fill="none"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+image: registro.tjro.jus.br/tjro/stic/dsi/dinq/node:v16.13.2
+stages:
+  - build
+  - test
+  - metricas
+  - registro
+  - deploy
+
+variables:
+  CI__REGISTRY: ${CI_REGISTRY_IMAGE}:${CI_PIPELINE_IID}
+  REGISTRO_NOME: ${CI__REGISTRY}
+
+# cache:
+#   paths:
+#   - node_modules/
+
+include:
+  - template: Jobs/Code-Quality.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - project: 'tjro/fabricasoftware/gitlab-ci/ci-cd'
+    ref: master
+    file:
+      - '/register.yaml'
+      - '/argocd-deploy-front-plantao.yaml'
+      - '/npm-plantao.yaml'
+      - '/sonar-angular.yaml'

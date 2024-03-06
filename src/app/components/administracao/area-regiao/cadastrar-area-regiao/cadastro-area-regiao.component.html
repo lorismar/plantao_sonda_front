@@ -1,0 +1,259 @@
+<div class="container">
+  <app-breadcrumb
+    [paginaAnterior]="'Administração'"
+    [paginaAtual]="'Cadastro Área e Região'"
+  >
+  </app-breadcrumb>
+  <div class="d-flex align-items-center justify-content-end m-3">
+    <button
+      [disabled]="true"
+      type="button"
+      class="btn btn-primary"
+      style="background: var(--bs-primary)"
+    >
+      Cadastrar Áreas e Regiões
+      <fa-icon [icon]="faPlus"></fa-icon>
+    </button>
+  </div>
+  <div class="container">
+    <div class="card m-1 shadow">
+      <app-botao-voltar-header-card
+        [url]="'/home/area-regiao'"
+        [texto]="'Voltar para listagem'"
+      ></app-botao-voltar-header-card>
+      <div class="card-title p-4 pb-0 pb-3 fw-bold">
+        {{
+          authorizationService.manterRegiaoPlantao()
+            ? "Preenha os campos para realizar o cadastro!"
+            : "Usuário sem permissão para realizar o cadastro."
+        }}
+      </div>
+      <div class="card-body p-4 pt-0">
+        <div *ngIf="ehAdministrador()">
+          <div class="row">
+            <div class="col-lg-6 mb-0 mb-3">
+              <span class="card-title pb-1 h6 fw-bold text-secondary">
+                Nome da Região*
+              </span>
+              <div class="input-group">
+                <input
+                  [ngClass]="{
+                    'is-valid': areaRegialModel.nomeRegiao != '',
+                    'is-invalid ': areaRegialModel.nomeRegiao == '' && post
+                  }"
+                  pTooltip="Nome da Região"
+                  name="nome"
+                  class="form-control"
+                  placeholder="Digite o nome da região"
+                  required
+                  type="text"
+                  [maxlength]="'256'"
+                  [(ngModel)]="areaRegialModel.nomeRegiao"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6 mb-0 mb-3">
+              <span class="card-title pb-1 h6 fw-bold text-secondary">
+                Nome da Área*
+              </span>
+              <div class="input-group">
+                <input
+                  [ngClass]="{
+                    'is-valid': areaRegialModel.nomeArea != '',
+                    'is-invalid': areaRegialModel.nomeArea === '' && post
+                  }"
+                  pTooltip="Nome da Área"
+                  name="nome"
+                  class="form-control"
+                  title="Nome da Área"
+                  required
+                  type="text"
+                  placeholder="Digite o nome da área"
+                  [maxlength]="'256'"
+                  [(ngModel)]="areaRegialModel.nomeArea"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row col-lg-6 mb-3">
+            <div>
+              <span class="card-title h6 fw-bold text-secondary">
+                Pesquise e selecione a Comarca/Jurisdição*
+              </span>
+            </div>
+            <p-multiSelect
+              display="comma"
+              class="pe-0"
+              [ngClass]="{
+                'ng-dirty ng-invalid':
+                  areaRegialModel.comarca.length == 0 && post
+              }"
+              [showClear]="true"
+              [options]="comarcas"
+              [(ngModel)]="selectedComarcas"
+              (ngModelChange)="addComarcaAoModel(selectedComarcas)"
+              placeholder="Selecione ao menos 1(uma) Comarca/Jurisdição"
+              selectedItemsLabel="{{
+                selectedComarcas
+                  ? selectedComarcas.length === 1
+                    ? '1 item selecionado'
+                    : selectedComarcas.length + ' itens selecionados'
+                  : 'Nenhum item selecionado'
+              }}"
+              optionLabel="nome"
+            ></p-multiSelect>
+          </div>
+          <div class="row ps-1 col-lg-12">
+            <span class="card-title h6 fw-bold text-secondary">
+              Competência
+            </span>
+            <textarea
+              [ngClass]="{
+                'is-valid ': areaRegialModel.competencia[0].nome.trim() != '',
+
+              }"
+              class="form-control ms-2"
+              pTooltip="Nome da competência"
+              [required]="true"
+              placeholder="Digite a competência"
+              [maxlength]="'256'"
+              [(ngModel)]="areaRegialModel.competencia[0].nome"
+              id="exampleFormControlTextarea1"
+              rows="3"
+            ></textarea>
+          </div>
+          <div
+            class="form-check pt-3"
+            *ngIf="!semComarcasSelecionadas && orgaosEncontrados.length > 0"
+          >
+            <input
+              (click)="toggleMarcarTodos()"
+              [checked]="todosSelecionados()"
+              class="form-check-input cursor-pointer"
+              type="checkbox"
+              value=""
+              id="defaultCheck1"
+            />
+            <p class="form-check-label h6" for="marcarTodosCheckbox">
+              Marcar/desmarcar todos
+            </p>
+          </div>
+          <div
+            class="accordion"
+            id="accordionOrgaos"
+            *ngIf="!semComarcasSelecionadas && orgaosEncontrados.length > 0"
+          >
+            <div
+              *ngFor="let resultado of resultadosAnteriores; let i = index"
+              class="accordion-item"
+            >
+              <h2 class="accordion-header" [id]="'headingOrgao' + i">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  [attr.data-bs-target]="'#collapseOrgao' + i"
+                  aria-expanded="true"
+                  [attr.aria-controls]="'collapseOrgao' + i"
+                >
+                  {{
+                    resultado.termoBuscado == "Núcleo de Justiça 4.0"
+                      ? "Órgãos Julgadores da Comarca/Jurisdição 1. Justiça Estadual"
+                      : "Órgãos Julgadores da Comarca/Jurisdição " +
+                        (resultado.termoBuscado.includes("Comarca de")
+                          ? resultado.termoBuscado
+                              .replace("Comarca de", "")
+                              .trim()
+                          : resultado.termoBuscado)
+                  }}
+                </button>
+              </h2>
+              <div
+                [id]="'collapseOrgao' + i"
+                class="accordion-collapse collapse show"
+                [attr.aria-labelledby]="'headingOrgao' + i"
+              >
+                <div class="accordion-body">
+                  <div class="columns">
+                    <ng-container
+                      *ngFor="
+                        let orgao of resultado.orgaosEncontrados;
+                        let j = index
+                      "
+                    >
+                      <div *ngIf="j % 10 === 0" class="column">
+                        <ul>
+                          <li
+                            *ngFor="
+                              let orgaoColumn of resultado.orgaosEncontrados.slice(
+                                j,
+                                j + 10
+                              )
+                            "
+                            style="list-style-type: none"
+                          >
+                            <div class="form-check cursor-pointer">
+                              <input
+                                [checked]="orgaoColumn.selected"
+                                (change)="onOrgaoSelectedChange(orgaoColumn)"
+                                class="form-check-input cursor-pointer"
+                                type="checkbox"
+                                value=""
+                                id="defaultCheck{{ i }}{{ j }}"
+                              />
+                              <label
+                                class="form-check-label h6"
+                                for="defaultCheck{{ i }}{{ j }}"
+                              >
+                                {{ orgaoColumn.nome }}
+                              </label>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <div class="border-bottom-0">
+            <button
+              type="button"
+              title="Limpar campos"
+              class="mt-3 btn btn-light border btn-block"
+              (click)="limparCampos()"
+            >
+              Limpar Campos
+            </button>
+            <button
+              type="submit"
+              title="Salvar"
+              (click)="salvar()"
+              [ngClass]="{
+                'mt-3 btn btn-success btn-block ms-3': true
+              }"
+            >
+              <span
+                [ngClass]="{ 'spinner-grow spinner-grow-sm me-1': loading }"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span [ngClass]="{ 'visually-hidden': loading }"></span
+              >{{ loading ? "Salvando..." : "Salvar" }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!ehAdministrador()">
+        <p-skeleton styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="10rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="5rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="10rem" height="4rem"></p-skeleton>
+      </div>
+    </div>
+  </div>
+</div>

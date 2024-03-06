@@ -1,0 +1,39 @@
+<nav
+  class="navbar navbar-top navbar-expand-lg border-top-0 border-bottom text-secondary"
+>
+  <div class="container-fluid">
+    <nav class="me-auto d-flex">
+      <fa-icon
+        [icon]="faBars"
+        class="me-3 ms-1 text-dark cursor-pointer"
+        (click)="toggleMenu()"
+      ></fa-icon>
+      <span class="text-black">
+        <div>
+          {{ labelEvent.titleApplication }}
+        </div>
+      </span>
+    </nav>
+    <app-acessibilidade></app-acessibilidade>
+    <div class="dropdown">
+      <span
+        class="btn bg-transparent border-0"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        data-bs-auto-close="outside"
+      >
+        <fa-icon [icon]="faUser"></fa-icon>
+      </span>
+      <ul class="dropdown-menu dropdown-menu-end shadow">
+        <li
+          class="dropdown-item cursor-pointer px-2"
+          title="Sair do Sistema"
+          (click)="openModalDeslogar()"
+        >
+          <fa-icon [icon]="faArrowRightToBracket"> </fa-icon>
+          <span class="text-center cursor-pointer ms-2"> Sair </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

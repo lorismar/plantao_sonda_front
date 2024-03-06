@@ -1,0 +1,344 @@
+<div class="container">
+  <app-breadcrumb
+    [paginaAnterior]="'Plantão Judicial'"
+    [proximaPagina]="'Cadastrar Plantão 1ª Instância'"
+    [paginaAtual]="'Lista de Plantões 1ª Instância'"
+  >
+  </app-breadcrumb>
+  <div class="d-flex align-items-center justify-content-end m-3">
+    <button
+      [disabled]="true"
+      type="button"
+      class="btn btn-primary"
+      style="background: var(--bs-primary)"
+      label="Show"
+    >
+      Cadastrar Plantão 1ª Instância
+      <fa-icon [icon]="faPlus"></fa-icon>
+    </button>
+  </div>
+  <div class="container">
+    <div class="card m-1 shadow">
+      <app-botao-voltar-header-card
+        [url]="'/home/plantao'"
+        [texto]="'Voltar para listagem'"
+      ></app-botao-voltar-header-card>
+      <div class="card-title p-4 pb-0 pb-3 fw-bold">
+        {{
+          authorizationService.plantaoJudicial1Grau()
+            ? "Preencha os campos para realizar o cadastro"
+            : "Usuário sem permissão para realizar o cadastro"
+        }}
+      </div>
+      <div class="card-body p-4">
+        <div *ngIf="authorizationService.plantaoJudicial1Grau()">
+          <div class="row">
+            <div class="col-lg-6 mb-0 mb-3">
+              <label>Região*</label>
+              <ng-select
+                (change)="getRegiaoSelecionada($event)"
+                placeholder="Selecione a região"
+              >
+                <ng-option
+                  *ngFor="let item of listaAreasRegioes"
+                  [value]="item"
+                  >{{ item.nomeRegiao }}</ng-option
+                >
+              </ng-select>
+            </div>
+            <div class="col-lg-6 mb-0 mb-3">
+              <label>E-mail do plantão*</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Ex: plantão@gmail.com"
+                  [(ngModel)]="plantaoModel.emailPlantao"
+                  [ngClass]="{
+                    'is-valid': validadorEmail(plantaoModel.emailPlantao),
+                    'is-invalid':
+                      !validadorEmail(plantaoModel.emailPlantao) &&
+                      plantaoModel.emailPlantao != ''
+                  }"
+                />
+              </div>
+            </div>
+
+            <div
+              class="accordion pb-2"
+              id="accordionPanelsStayOpenExample"
+              *ngIf="podeAparecerAccordion()"
+            >
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                  <button
+                    class="accordion-button fw-bold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseOne"
+                    aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseOne"
+                  >
+                    Comarcas/Jurisdição
+                  </button>
+                </h2>
+                <div
+                  id="panelsStayOpen-collapseOne"
+                  class="accordion-collapse collapse show"
+                  aria-labelledby="panelsStayOpen-headingOne"
+                >
+                  <div class="accordion-body">
+                    <li
+                      class="list-group-item"
+                      *ngFor="let item of comarcasSelecionadas"
+                    >
+                      {{ item.nome }}
+                    </li>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                  <button
+                    class="accordion-button collapsed fw-bold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseTwo"
+                    aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseTwo"
+                  >
+                    Competências
+                  </button>
+                </h2>
+                <div
+                  id="panelsStayOpen-collapseTwo"
+                  class="accordion-collapse collapse"
+                  aria-labelledby="panelsStayOpen-headingTwo"
+                >
+                  <div class="accordion-body">
+                    <div *ngIf="compentenciasSelecionadas.length != 0">
+                      <li
+                        class="list-group-item"
+                        *ngFor="let item of compentenciasSelecionadas"
+                      >
+                        {{ item.nome }}
+                      </li>
+                    </div>
+                    <li
+                      class="list-group-item"
+                      *ngIf="compentenciasSelecionadas.length == 0"
+                    >
+                      Não possui
+                    </li>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                  <button
+                    class="accordion-button collapsed fw-bold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseThree"
+                    aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseThree"
+                  >
+                    Órgãos Julgadores
+                  </button>
+                </h2>
+                <div
+                  id="panelsStayOpen-collapseThree"
+                  class="accordion-collapse collapse collapse show"
+                  aria-labelledby="panelsStayOpen-headingThree"
+                >
+                  <div class="accordion-body">
+                    <div
+                      class="form-check form-switch form-check-label justify-content-end"
+                      *ngFor="let item of orgaosJulgadoresSelecionados"
+                    >
+                      <input
+                        class="form-check-input cursor-pointer"
+                        type="checkbox"
+                        (change)="selecionarFlag(item)"
+                        [checked]="item.selecionado"
+                      />
+                      <span
+                        class="form-check-label d-flex justify-content-between align-items-center"
+                      >
+                        {{ item.nome }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span
+              *ngIf="podeAparecerAccordion()"
+              class="text-danger fw-bold pb-4"
+              >*Indique o Órgão Julgador do plantão
+            </span>
+          </div>
+          <div class="row">
+            <div class="col-lg-3 mb-0 mb-3">
+              <label
+                [ngClass]="{
+                  'text-danger':
+                    plantaoModel.dataInicial > plantaoModel.dataFinal &&
+                    plantaoModel.dataFinal != ''
+                }"
+              >
+                {{
+                  plantaoModel.dataInicial > plantaoModel.dataFinal &&
+                  plantaoModel.dataFinal != ""
+                    ? "A data inicial não pode ser maior que a final"
+                    : "Data Inicial do Plantão*"
+                }}</label
+              >
+              <div class="input-group">
+                <input
+                  type="date"
+                  class="form-control"
+                  [(ngModel)]="plantaoModel.dataInicial"
+                />
+              </div>
+            </div>
+            <div class="col-lg-3 mb-0 mb-3">
+              <label>Data Final do Plantão*</label>
+              <div class="input-group">
+                <input
+                  name="data"
+                  type="date"
+                  required
+                  class="form-control"
+                  [(ngModel)]="plantaoModel.dataFinal"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6 mb-0 mb-3">
+              <label>Magistrado*</label>
+              <p-autoComplete
+                class="p-inputtext-sm col-lg-6"
+                placeholder="Digite o nome do servidor"
+                [(ngModel)]="selectedItemMagistrado"
+                [suggestions]="suggestionsMagistrados"
+                (completeMethod)="searchMagistrados($event)"
+                (onSelect)="addMagistradoAoModel(selectedItemMagistrado)"
+                autocomplete="no-chrome-autocomplete"
+                field="nome"
+              ></p-autoComplete>
+            </div>
+            <div class="col-lg-6 mb-0 mb-3">
+              <label>Servidor*</label>
+              <p-autoComplete
+                class="p-inputtext-sm col-lg-6"
+                placeholder="Digite o nome do servidor"
+                [(ngModel)]="selectedItemServidor"
+                [suggestions]="suggestionsServidores"
+                (completeMethod)="searchServidores($event)"
+                (onSelect)="addServidorAoModel(selectedItemServidor)"
+                autocomplete="no-chrome-autocomplete"
+                field="nome"
+              ></p-autoComplete>
+            </div>
+            <div class="col-md-6 mb-0 mb-3">
+              <label>Oficial de Justiça*</label>
+              <div class="row">
+                <p-autoComplete
+                  class="p-inputtext-sm col-lg-12"
+                  placeholder="Digite o nome do Oficial de Justiça"
+                  [(ngModel)]="selectedItemOficialJustica"
+                  [suggestions]="suggestionsServidores"
+                  (completeMethod)="searchServidores($event)"
+                  (onSelect)="
+                    addOficialJusticaAoModel(selectedItemOficialJustica)
+                  "
+                  autocomplete="no-chrome-autocomplete"
+                  field="nome"
+                ></p-autoComplete>
+              </div>
+            </div>
+            <div class="col-md-6 mb-0 mb-3">
+              <label>Telefone do Plantão*</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Digite o telefone"
+                  [(ngModel)]="plantaoModel.telefonePlantao"
+                  [mask]="'(00) 0 0000-0000'"
+                  [ngClass]="{
+                    'is-valid': validadorTelefone(plantaoModel.telefonePlantao),
+                    'is-invalid':
+                      !validadorTelefone(plantaoModel.telefonePlantao) &&
+                      plantaoModel.telefonePlantao != ''
+                  }"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 mb-0 mb-3">
+              <label>Cidade - Oficial de Justiça*</label>
+              <p-autoComplete
+                class="p-inputtext-sm"
+                placeholder="Cidade"
+                [(ngModel)]="selectedItemComarca"
+                [suggestions]="suggestions"
+                (completeMethod)="searchComarcas($event)"
+                (onSelect)="onItemSelect($event)"
+                autocomplete="no-chrome-autocomplete"
+              ></p-autoComplete>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <div class="border-bottom-0">
+              <button
+                type="button"
+                title="Limpar campos"
+                class="mt-3 btn btn-light border btn-block"
+                (click)="limparCampos()"
+              >
+                Limpar Campos
+              </button>
+              <p-confirmPopup>
+                <ng-template pTemplate="content" let-message>
+                  <div
+                    class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border p-3 mb-3"
+                  >
+                    <i
+                      [class]="message.icon"
+                      class="text-6xl text-primary-500"
+                    ></i>
+                    <p>{{ message.message }}</p>
+                  </div>
+                </ng-template>
+              </p-confirmPopup>
+              <button
+                type="button"
+                title="Salvar"
+                [disabled]="!formInvalid() || loading"
+                (click)="confirm1($event)"
+                [ngClass]="{
+                  'mt-3 btn btn-success btn-block ms-3': true
+                }"
+              >
+                <span
+                  [ngClass]="{ 'spinner-grow spinner-grow-sm me-1': loading }"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                <span [ngClass]="{ 'visually-hidden': loading }"></span
+                >{{ loading ? "Salvando..." : "Salvar" }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!authorizationService.plantaoJudicial1Grau()">
+          <p-skeleton styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="10rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="5rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="10rem" height="4rem"></p-skeleton>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

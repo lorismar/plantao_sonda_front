@@ -1,0 +1,22 @@
+<nav aria-label="navegacao" class="mx-3 small">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a>{{ paginaAnterior }}</a>
+    </li>
+    <li *ngIf="!proximaPagina; else existeProxima" class="breadcrumb-item">
+      <a
+        ><b>{{ paginaAtual }}</b></a
+      >
+    </li>
+    <ng-template #existeProxima>
+      <li class="breadcrumb-item">
+        <a>{{ paginaAtual }}</a>
+      </li>
+    </ng-template>
+    <li *ngIf="proximaPagina" class="breadcrumb-item">
+      <a
+        ><b>{{ proximaPagina }}</b></a
+      >
+    </li>
+  </ol>
+</nav>

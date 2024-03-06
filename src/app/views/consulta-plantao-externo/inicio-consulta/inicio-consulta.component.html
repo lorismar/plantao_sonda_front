@@ -1,0 +1,141 @@
+<div class="container-fluid m-0 p-0">
+  <app-acessibilidade
+    class="dropdown position-fixed end-0 me-2 z-3"
+  ></app-acessibilidade>
+  <header class="container-fluid m-0 p-0 page-header bg-secondary">
+    <div class="container">
+      <div class="row">
+        <div class="col d-flex align-items-center">
+          <img
+            [src]="'./assets/logo-tjro.png'"
+            alt="Logo do TJRO"
+            class="logo mt-5"
+          />
+        </div>
+        <div
+          class="col-8 d-none d-md-flex justify-content-center align-items-center"
+        >
+          <h4 class="text-white mt-5">CONSULTA DE PLANTÃO JUDICIAL</h4>
+        </div>
+        <div class="col d-flex justify-content-center align-items-end"></div>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <div class="card shadow" style="margin-top: -85px">
+      <div class="card-body p-4">
+        <div class="content">
+          <div class="row">
+            <div
+              class="col-md-12 mb-0 mb-3 d-flex flex-column justify-content-end text-secondary"
+            >
+              Bem-vindo(a) ao serviço de Plantão Judicial do Tribunal de Justiça
+              do Estado de Rondônia.
+            </div>
+
+            <div
+              class="col-md-12 mb-0 mb-3 d-flex flex-column justify-content-end pt-2"
+            >
+              <span
+                ><fa-icon
+                  [icon]="faExclamationCircle"
+                  class="text-warning fa-lg me-2"
+                ></fa-icon>
+                O Tribunal de Justiça do Estado de Rondônia disponibiliza nesta
+                área as informações pertinentes aos Plantões Judiciais.</span
+              >
+            </div>
+          </div>
+          <div class="row pt-4">
+            <div
+              class="col-md-12 mb-0 mb-3 d-flex flex-column justify-content-end fw-bold"
+            >
+              <span class="h5 fw-bold"
+                >Para consultar, selecione uma seção abaixo:</span
+              >
+            </div>
+          </div>
+          <div
+            (click)="salvarLocalStorage('primeiraInstancia')"
+            class="col-md-12 mb-0 mb-3 d-flex flex-column justify-content-end pt-2 cursor-pointer"
+            pTooltip="Plantão 1ª Instância"
+          >
+            <div class="card bg-light border-0">
+              <div class="card-body">
+                <div class="row">
+                  <span class="h5 fw-bold"
+                    ><fa-icon
+                      [icon]="faCircle"
+                      class="text-warning me-2"
+                    ></fa-icon
+                    >PLANTÃO FORENSE 1ª INSTÂNCIA</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            (click)="salvarLocalStorage('segundaInstancia')"
+            class="col-md-12 mb-0 mb-3 d-flex flex-column justify-content-end pt-2 cursor-pointer"
+            pTooltip="Plantão 2ª Instância"
+          >
+            <div class="card bg-light border-0">
+              <div class="card-body">
+                <div class="row">
+                  <span class="h5 fw-bold"
+                    ><fa-icon
+                      [icon]="faCircle"
+                      style="color: #378bb1"
+                      class="me-2"
+                    ></fa-icon
+                    >PLANTÃO FORENSE 2ª INSTÂNCIA</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            (click)="salvarLocalStorage('turmaRecursal')"
+            class="col-md-12 mb-0 mb-3 d-flex flex-column justify-content-end pt-2 cursor-pointer"
+            pTooltip="Plantão Forense Turma Recursal"
+          >
+            <div class="card bg-light border-0">
+              <div class="card-body">
+                <div class="row">
+                  <span class="h5 fw-bold"
+                    ><fa-icon
+                      [icon]="faCircle"
+                      class="text-primary me-2"
+                    ></fa-icon
+                    >PLANTÃO FORENSE TURMA RECURSAL</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            (click)="salvarLocalStorage('externo')"
+            class="col-md-12 mb-0 mb-3 d-flex flex-column justify-content-end pt-2 cursor-pointer"
+            pTooltip="Plantão Externo"
+          >
+            <div class="card bg-light border-0">
+              <div class="card-body">
+                <div class="row">
+                  <span class="h5 fw-bold"
+                    ><fa-icon
+                      [icon]="faCircle"
+                      class="me-2"
+                      style="color: var(--bs-purple)"
+                    ></fa-icon
+                    >PLANTÃO EXTERNO</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end"></div>
+      </div>
+    </div>
+  </div>
+</div>

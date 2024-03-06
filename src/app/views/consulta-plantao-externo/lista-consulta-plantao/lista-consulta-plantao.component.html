@@ -1,0 +1,772 @@
+<div class="container-fluid m-0 p-0">
+  <app-acessibilidade
+    class="dropdown position-fixed end-0 me-2 z-3"
+  ></app-acessibilidade>
+  <header class="container-fluid m-0 p-0 page-header bg-secondary">
+    <div class="container">
+      <div class="row">
+        <div class="col d-flex align-items-center">
+          <img
+            [src]="'./assets/logo-tjro.png'"
+            alt="Logo do TJRO"
+            class="logo mt-5"
+          />
+        </div>
+        <div
+          class="col-8 d-none d-md-flex justify-content-center align-items-center"
+        >
+          <h4 class="text-white mt-5">CONSULTA DE PLANTÃO JUDICIAL</h4>
+        </div>
+        <div class="col d-flex justify-content-center align-items-end"></div>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <div class="card shadow mb-5" style="margin-top: -85px">
+      <app-botao-voltar-header-card
+        [texto]="'Voltar'"
+        [url]="'/consulta'"
+      ></app-botao-voltar-header-card>
+      <div class="card-body p-4">
+        <div class="content">
+          <div
+            class="col-md-12 mb-0 mb-3 d-flex flex-column justify-content-end pt-2"
+          >
+            <div
+              class="card bg-light border-0"
+              [pTooltip]="
+                localStorage.getItem('tipoPlantao') === 'primeiraInstancia'
+                  ? 'PLANTÃO FORENSE 1ª INSTÂNCIA'
+                  : localStorage.getItem('tipoPlantao') === 'segundaInstancia'
+                  ? 'PLANTÃO FORENSE 2ª INSTÂNCIA'
+                  : localStorage.getItem('tipoPlantao') === 'turmaRecursal'
+                  ? 'PLANTÃO FORENSE TURMA RECURSAL'
+                  : localStorage.getItem('tipoPlantao') === 'externo'
+                  ? 'PLANTÃO EXTERNO'
+                  : 'Nenhum plantão selecionado'
+              "
+            >
+              <div class="card-body">
+                <div class="row">
+                  <span class="h5 fw-bold"
+                    ><fa-icon
+                      [icon]="faCircle"
+                      class="me-2"
+                      [ngClass]="{
+                        'text-warning':
+                          localStorage.getItem('tipoPlantao') ===
+                          'primeiraInstancia',
+                        'segunda-instancia':
+                          localStorage.getItem('tipoPlantao') ===
+                          'segundaInstancia',
+                        'text-primary':
+                          localStorage.getItem('tipoPlantao') ===
+                          'turmaRecursal',
+                        externo:
+                          localStorage.getItem('tipoPlantao') === 'externo'
+                      }"
+                    >
+                      ></fa-icon
+                    >{{
+                      localStorage.getItem("tipoPlantao") ===
+                      "primeiraInstancia"
+                        ? "PLANTÃO FORENSE 1ª INSTÂNCIA"
+                        : localStorage.getItem("tipoPlantao") ===
+                          "segundaInstancia"
+                        ? "PLANTÃO FORENSE 2ª INSTÂNCIA"
+                        : localStorage.getItem("tipoPlantao") ===
+                          "turmaRecursal"
+                        ? "PLANTÃO FORENSE TURMA RECURSAL"
+                        : localStorage.getItem("tipoPlantao") === "externo"
+                        ? "PLANTÃO EXTERNO"
+                        : "NENHUM PLANTÃO SELECIONADO"
+                    }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="filtroTurmaRecursal" class="content pt-4">
+              <div class="row">
+                <div class="col-lg-3 mb-0 mb-3">
+                  <label>Data Inicial do Plantão</label>
+                  <div class="input-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      placeholder="Data Inicial"
+                      [(ngModel)]="dataInicial"
+                      [ngClass]="{
+                        'is-valid': dataInicial != ''
+                      }"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-3 mb-0 mb-3">
+                  <label>Data Final do Plantão</label>
+                  <div class="input-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      placeholder="Data Final"
+                      [(ngModel)]="dataFinal"
+                      [ngClass]="{
+                        'is-valid': dataFinal != ''
+                      }"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-3 mb-0 pt-4">
+                  <button
+                    [disabled]="!pesquisarInvalidRecursal() || loading"
+                    (click)="pesquisar()"
+                    type="button"
+                    class="btn btn-primary"
+                  >
+                    <span
+                      [ngClass]="{
+                        'spinner-grow spinner-grow-sm me-1': loading
+                      }"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    <span [ngClass]="{ 'visually-hidden': loading }"></span
+                    >{{ loading ? "Pesquisando..." : "Pesquisar" }}
+                    <fa-icon [icon]="faSearch"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="content"
+                *ngIf="plantoesEcontrados && listaPlantoes.length > 0"
+              >
+                <div
+                  class="row pt-3"
+                  *ngIf="dataInicial != '' && dataFinal != ''"
+                >
+                  <span class="h5 fw-bold"
+                    >Período: {{ dataInicial | date : "dd/MM/yyyy" }} a
+                    {{ dataFinal | date : "dd/MM/yyyy" }}</span
+                  >
+                </div>
+                <div
+                  class="card bg-transparent border-1 mb-3"
+                  *ngFor="let item of listaPlantoes"
+                >
+                  <div class="card-body">
+                    <fa-icon
+                      *ngIf="item.alteracao == 'SIM'"
+                      [icon]="faExclamationTriangle"
+                      (click)="showDialogTurmaRecursal(item)"
+                      pTooltip="Este ítem sofreu alterações após o seu cadastro!"
+                      class="position-absolute top-0 end-0 m-3 text-warning fa-lg cursor-pointer"
+                    ></fa-icon>
+                    <div class="row">
+                      <div class="col lg-6">
+                        <div class="row pb-3">
+                          <span class="h5"> {{ item.orgaoJulgador }}</span>
+                        </div>
+                        <span
+                          ><b>Período:</b>
+                          {{ item.dataInicial | date : "dd/MM/yyyy" }} a
+                          {{ item.dataFinal | date : "dd/MM/yyyy" }}</span
+                        >
+                        <br />
+                        <span
+                          ><b>Órgão Julgador:</b> {{ item.orgaoJulgador }}</span
+                        >
+                        <br />
+                        <span>
+                          <b>Telefone do plantão:</b>
+                          {{
+                            item.telefonePlantao | mask : "(00) 0 0000-0000"
+                          }}</span
+                        >
+                        <br />
+                      </div>
+                      <div class="col lg-6">
+                        <fa-icon
+                          [icon]="faUser"
+                          class="text-secondary"
+                        ></fa-icon>
+                        <span class="ms-2 text-secondary"
+                          ><b>Magistrado</b></span
+                        >
+                        <br />
+                        <span class="ms-4">{{ item.magistrado }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row pt-5"
+                *ngIf="listaPlantoes.length == 0 && plantoesEcontrados"
+              >
+                <span class="fw-bold"
+                  >Nenhum Plantão encontrado com os filtros inseridos.</span
+                >
+              </div>
+              <p-dialog
+                header="Histórico de alterações"
+                [(visible)]="visibleTurmaRecursal"
+                [maximizable]="true"
+                [style]="{ width: '50vw' }"
+                [modal]="true"
+              >
+                <div class="row">
+                  <h5>PLANTÃO FORENSE TURMA RECURSAL</h5>
+                </div>
+                <span>
+                  Período:
+
+                  <b>
+                    {{ dataInicialAlteracao | date : "dd/MM/yyyy" }}
+                  </b>
+                  a
+                  <b> {{ dataFinalAlteracao | date : "dd/MM/yyyy" }}</b>
+                </span>
+                <div class="pt-3">
+                  <div class="table-responsive">
+                    <table class="table w-100">
+                      <thead>
+                        <tr>
+                          <th>Data/Hora</th>
+                          <th>Justificativa</th>
+                          <th>Usuário responsável</th>
+                          <th>Alteração</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of alteracoesRecentes">
+                          <td>
+                            {{
+                              item.dataAlteracao | date : "dd/MM/yyyy HH:mm  "
+                            }}
+                          </td>
+                          <td>{{ item.justificativa }}</td>
+                          <td>{{ item.responsavel }}</td>
+                          <td>
+                            <ng-container
+                              *ngIf="
+                                item.campoAlterado == 'dataInicial' ||
+                                  item.campoAlterado == 'dataFinal';
+                                else semDatas
+                              "
+                            >
+                              {{ item.valorNovo | date : "dd/MM/yyyy" }}<br />
+                              <small>
+                                <b>Anterior:</b>
+                                {{ item.valorAntigo | date : "dd/MM/yyyy" }}
+                              </small></ng-container
+                            >
+                            <ng-template #semDatas
+                              >{{ item.valorNovo }}<br />
+                              <small>
+                                <b>Anterior:</b>
+                                {{ item.valorAntigo }}
+                              </small></ng-template
+                            >
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </p-dialog>
+            </div>
+            <div *ngIf="filtro2instancia" class="content pt-4">
+              <div class="row">
+                <div class="col-lg-4 mb-0 mb-3">
+                  <label>Órgão Colegiado*</label>
+                  <p-dropdown
+                    [options]="suggestions"
+                    [(ngModel)]="selectedItemOrgaoJulgador"
+                    [showClear]="true"
+                    (onChange)="onItemSelectOrgaoJulgador($event)"
+                    placeholder="Pesquise e/ou selecione o Órgão Colegiado"
+                    [filter]="true"
+                    #comarcaInput
+                    optionLabel="nome"
+                  ></p-dropdown>
+                </div>
+                <div class="col-lg-3 mb-0 mb-3">
+                  <label>Data Inicial</label>
+                  <div class="input-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      placeholder="Data Inicial"
+                      [(ngModel)]="dataInicial"
+                      [ngClass]="{
+                        'is-valid': dataInicial != ''
+                      }"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-3 mb-0 mb-3">
+                  <label>Data Final</label>
+                  <div class="input-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      placeholder="Data Final"
+                      [(ngModel)]="dataFinal"
+                      [ngClass]="{
+                        'is-valid': dataFinal != ''
+                      }"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-2 mb-0 pt-4">
+                  <button
+                    (click)="pesquisar()"
+                    [disabled]="!pesquisarInvalid2Instancia()"
+                    type="button"
+                    class="btn btn-primary"
+                  >
+                    <span
+                      [ngClass]="{
+                        'spinner-grow spinner-grow-sm me-1': loading
+                      }"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    <span [ngClass]="{ 'visually-hidden': loading }"></span
+                    >{{ loading ? "Pesquisando..." : "Pesquisar" }}
+                    <fa-icon [icon]="faSearch"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="content"
+                *ngIf="plantoesEcontrados && listaPlantoes.length > 0"
+              >
+                <div class="row" *ngIf="dataInicial != '' && dataFinal != ''">
+                  <span class="h5 fw-bold"
+                    >Período: {{ dataInicial | date : "dd/MM/yyyy" }} a
+                    {{ dataFinal | date : "dd/MM/yyyy" }}</span
+                  >
+                </div>
+                <div
+                  class="card bg-transparent border-1 mb-3"
+                  *ngFor="let item of listaPlantoes"
+                >
+                  <div class="card-body">
+                    <fa-icon
+                      *ngIf="item.alteracao == 'SIM'"
+                      [icon]="faExclamationTriangle"
+                      (click)="showDialog(item)"
+                      pTooltip="Este ítem sofreu alterações após o seu cadastro!"
+                      class="position-absolute top-0 end-0 m-3 text-warning fa-lg cursor-pointer"
+                    ></fa-icon>
+                    <div class="row">
+                      <div class="col lg-6">
+                        <div class="row">
+                          <span class="h5">
+                            {{ item.orgaoJulgadorColegiado.nome }}</span
+                          >
+                        </div>
+                        <br />
+                        <span class="mt-3"
+                          ><b>Data Inicial:</b>
+                          {{ item.dataInicial | date : "dd/MM/yyyy" }}</span
+                        ><br />
+                        <span class="mt-3"
+                          ><b>Data Final</b>
+                          {{ item.dataFinal | date : "dd/MM/yyyy" }}</span
+                        >
+                        <br />
+                        <span
+                          ><b>Telefone do plantão:</b>
+                          {{
+                            item.telefonePlantao | mask : "(00) 0 0000-0000"
+                          }}</span
+                        >
+                        <br />
+                        <span>
+                          <b>Endereço:</b>
+                          {{ item.endereco }}</span
+                        >
+                        <br />
+                      </div>
+                      <div class="col lg-6">
+                        <fa-icon
+                          [icon]="faUser"
+                          class="text-secondary"
+                        ></fa-icon>
+                        <span class="ms-2 text-secondary"
+                          ><b>Servidores</b></span
+                        >
+                        <br />
+                        <div
+                          class="row"
+                          *ngFor="let servidores of item.servidores"
+                        >
+                          <span class="ms-4 pt-3"
+                            ><b>Nome: </b>{{ servidores.nome }}</span
+                          ><span class="ms-4"
+                            ><b>Cargo: </b>{{ servidores.cargo }}</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row pt-5"
+                *ngIf="listaPlantoes.length == 0 && plantoesEcontrados"
+              >
+                <span class="fw-bold"
+                  >Nenhum Plantão encontrado com os filtros inseridos.</span
+                >
+              </div>
+              <div class="card flex justify-content-center" *ngIf="visible">
+                <p-dialog
+                  header="Histórico de alterações"
+                  class="text-secondary"
+                  [(visible)]="visible"
+                  [maximizable]="true"
+                  [style]="{ width: '50vw' }"
+                  [modal]="true"
+                >
+                  <div class="row">
+                    <h5>PLANTÃO FORENSE 2ª INSTÂNCIA</h5>
+                  </div>
+                  <span class="fw-bold text-secondary">
+                    Período:
+
+                    <b>
+                      {{ this.dataInicialAlteracao | date : "dd/MM/yyyy" }} a
+                      {{ this.dataFinalAlteracao | date : "dd/MM/yyyy" }}
+                    </b>
+                  </span>
+                  <div class="pt-3">
+                    <div class="table-responsive">
+                      <table class="table w-100">
+                        <thead>
+                          <tr>
+                            <th>Data/Hora</th>
+                            <th>Justificativa</th>
+                            <th>Usuário responsável</th>
+                            <th>Alteração</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of alteracoesRecentes">
+                            <td>
+                              {{
+                                item.dataAlteracao | date : "dd/MM/yyy HH:mm"
+                              }}
+                            </td>
+                            <td>{{ item.justificativa }}</td>
+                            <td>{{ item.responsavel }}</td>
+                            <td>
+                              <ng-container
+                                *ngIf="
+                                  item.campoAlterado == 'dataInicial' ||
+                                    item.campoAlterado == 'dataFinal';
+                                  else semDatas
+                                "
+                              >
+                                {{ item.valorNovo | date : "dd/MM/yyyy" }}<br />
+                                <small>
+                                  <b>Anterior:</b>
+                                  {{ item.valorAntigo | date : "dd/MM/yyyy" }}
+                                </small></ng-container
+                              >
+                              <ng-template #semDatas
+                                >{{ item.valorNovo }}<br />
+                                <small>
+                                  <b>Anterior:</b>
+                                  {{ item.valorAntigo }}
+                                </small></ng-template
+                              >
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </p-dialog>
+              </div>
+            </div>
+            <div *ngIf="filtro1instancia" class="content pt-4">
+              <div class="row">
+                <div class="col-lg-6 mb-0 mb-3">
+                  <label>Comarcas/Jurisdição</label>
+                  <p-dropdown
+                    [options]="suggestionsComarcas"
+                    [(ngModel)]="selectedItemComarca"
+                    [showClear]="true"
+                    (onChange)="onItemSelectItemComarca($event)"
+                    placeholder="Pesquise e/ou selecione a Comarca/Jurisdição"
+                    [filter]="true"
+                    filterBy="nome"
+                    optionLabel="nome"
+                  ></p-dropdown>
+                </div>
+                <div
+                  *ngIf="
+                    selectedItemComarca &&
+                    (selectedItemComarca.nome == 'Comarca de Porto Velho' ||
+                      selectedItemComarca.nome == 'Porto Velho')
+                  "
+                  class="col-lg-6 mb-0 mb-3"
+                >
+                  <label>Competencias</label>
+                  <p-dropdown
+                    [options]="suggestionsCompetencias"
+                    [(ngModel)]="selectedItemCompetencia"
+                    [showClear]="true"
+                    (onChange)="onItemSelectItemCompetencia($event)"
+                    placeholder="Pesquise e/ou selecione a Comarca/Jurisdição"
+                    [filter]="true"
+                    filterBy="nome"
+                    class="custom-dropdown"
+                    optionLabel="nome"
+                  ></p-dropdown>
+                </div>
+              </div>
+
+              <div
+                class="row d-flex"
+                *ngIf="
+                  regiao.areas.length > 0 &&
+                  selected &&
+                  selectedItemComarca != null
+                "
+              >
+                <span class="ms-0 pb-3">
+                  <span class="fw-bold">{{ regiao.nomeRegiao + ":" }}</span>
+                  {{ regiao.nomeComarcas }}
+                </span>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-3 mb-0 mb-3">
+                  <label>Data Inicial</label>
+                  <div class="input-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      placeholder="Data Inicial"
+                      [(ngModel)]="dataInicial"
+                      [ngClass]="{
+                        'is-valid': dataInicial != ''
+                      }"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-3 mb-0 mb-3">
+                  <label>Data Final</label>
+                  <div class="input-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      placeholder="Data Final"
+                      [(ngModel)]="dataFinal"
+                      [ngClass]="{
+                        'is-valid': dataFinal != ''
+                      }"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-3 mb-0 pt-4">
+                  <button
+                    (click)="pesquisar()"
+                    [disabled]="!pesquisarInvalid1Instancia() || loading"
+                    type="button"
+                    class="btn btn-primary"
+                  >
+                    <span
+                      [ngClass]="{
+                        'spinner-grow spinner-grow-sm me-1': loading
+                      }"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    <span [ngClass]="{ 'visually-hidden': loading }"></span
+                    >{{ loading ? "Pesquisando..." : "Pesquisar" }}
+                    <fa-icon [icon]="faSearch"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="content"
+                *ngIf="plantoesEcontrados && listaPlantoes.length > 0"
+              >
+                <div
+                  class="row pt-3"
+                  *ngIf="dataInicial != '' && dataFinal != ''"
+                >
+                  <span class="h5 fw-bold"
+                    >Período: {{ dataInicial | date : "dd/MM/yyyy" }} a
+                    {{ dataFinal | date : "dd/MM/yyyy" }}</span
+                  >
+                </div>
+                <div
+                  class="card bg-transparent border-1 mb-3"
+                  *ngFor="let item of listaPlantoes"
+                >
+                  <div class="card-body">
+                    <fa-icon
+                      *ngIf="item.alteracao == 'SIM'"
+                      [icon]="faExclamationTriangle"
+                      (click)="showDialog1Intancia(item)"
+                      pTooltip="Este ítem sofreu alterações após o seu cadastro!"
+                      class="position-absolute top-0 end-0 m-3 text-warning fa-lg cursor-pointer"
+                    ></fa-icon>
+                    <div class="row">
+                      <div class="col lg-6">
+                        <div class="row">
+                          <span class="h5"> {{ item.cidade }}</span>
+                        </div>
+                        <br />
+                        <span class="mt-3"
+                          ><b>Data Inicial:</b>
+                          {{ item.dataInicial | date : "dd/MM/yyyy" }}</span
+                        >
+                        <br /><span class="mt-3"
+                          ><b>Data Final:</b>
+                          {{ item.dataFinal | date : "dd/MM/yyyy" }}</span
+                        >
+                        <br />
+                        <span
+                          ><b>Telefone do plantão:</b>
+                          {{
+                            item.telefonePlantao | mask : "(00) 0 0000-0000"
+                          }}</span
+                        >
+                        <br />
+                        <span>
+                          <b>E-mail do plantão:</b>
+                          {{ item.emailPlantao }}</span
+                        >
+                        <br /><span>
+                          <b>Região:</b>
+                          {{ item.nomeRegiao }}</span
+                        >
+                        <br />
+                        <span>
+                          <b>Competências:</b>
+                          {{
+                            item.competencias[0].nome
+                              ? item.competencias[0].nome
+                              : "Não possui"
+                          }}</span
+                        >
+                      </div>
+                      <div class="col lg-6">
+                        <div class="row">
+                          <span class="ms-4 pt-3">
+                            <fa-icon
+                              [icon]="faUser"
+                              class="text-secondary me-2"
+                            ></fa-icon
+                            ><b>Magistrado </b></span
+                          ><span class="ms-4">{{ item.magistrado.nome }} </span
+                          ><span class="ms-4 pt-3">
+                            <fa-icon
+                              [icon]="faUser"
+                              class="text-secondary me-2"
+                            ></fa-icon
+                            ><b>Servidor </b></span
+                          ><span class="ms-4">{{ item.servidor.nome }}</span
+                          ><span class="ms-4 pt-3">
+                            <fa-icon
+                              [icon]="faUser"
+                              class="text-secondary me-2"
+                            ></fa-icon
+                            ><b>Oficial de Justiça </b></span
+                          ><span class="ms-4">{{
+                            item.oficialJustica.nome
+                          }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row pt-5"
+                *ngIf="listaPlantoes.length == 0 && plantoesEcontrados"
+              >
+                <span class="fw-bold"
+                  >Nenhum Plantão encontrado com os filtros inseridos.</span
+                >
+              </div>
+
+              <p-dialog
+                header="Histórico de alterações"
+                [(visible)]="visible1instancia"
+                [maximizable]="true"
+                [style]="{ width: '50vw' }"
+                [modal]="true"
+              >
+                <div class="row">
+                  <h5>PLANTÃO FORENSE 1ª INSTÂNCIA</h5>
+                </div>
+                <span>
+                  Período:
+
+                  <b>
+                    {{ dataInicialAlteracao | date : "dd/MM/yyyy" }}
+                  </b>
+                  a
+                  <b> {{ dataFinalAlteracao | date : "dd/MM/yyyy" }}</b>
+                </span>
+                <div class="pt-3">
+                  <div class="table-responsive">
+                    <table class="table w-100">
+                      <thead>
+                        <tr>
+                          <th>Data/Hora</th>
+                          <th>Justificativa</th>
+                          <th>Usuário responsável</th>
+                          <th>Alteração</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of alteracoesRecentes">
+                          <td>
+                            {{ item.dataAlteracao | date : "dd/MM/yyy HH:mm" }}
+                          </td>
+                          <td>{{ item.justificativa }}</td>
+                          <td>{{ item.responsavel }}</td>
+                          <td>
+                            <ng-container
+                              *ngIf="
+                                item.campoAlterado == 'dataInicial' ||
+                                  item.campoAlterado == 'dataFinal';
+                                else semDatas
+                              "
+                            >
+                              {{ item.valorNovo | date : "dd/MM/yyyy" }}<br />
+                              <small>
+                                <b>Anterior:</b>
+                                {{ item.valorAntigo | date : "dd/MM/yyyy" }}
+                              </small></ng-container
+                            >
+                            <ng-template #semDatas
+                              >{{ item.valorNovo }}<br />
+                              <small>
+                                <b>Anterior:</b>
+                                {{ item.valorAntigo }}
+                              </small></ng-template
+                            >
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </p-dialog>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

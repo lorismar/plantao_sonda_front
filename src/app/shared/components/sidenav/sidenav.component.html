@@ -1,0 +1,89 @@
+<nav class="nav-total border-end" id="sidebar">
+  <div class="sidebar-header">
+    <img
+      class="sidebar-logo my-4"
+      [src]="'assets/logo-tjro.png'"
+      alt="Logo brasão do TJRO"
+      title="Logo brasão do TJRO"
+    />
+  </div>
+
+  <ul class="list-unstyled components" *ngIf="isLoggedIn">
+    <li
+      class="d-flex justify-content-start align-items-center text-light p-2"
+      title="Nome do Usuário"
+    >
+      <fa-icon [icon]="faUser" class="text"></fa-icon>
+      <span class="ms-2 text-start">{{ usuarioModel.nome }}</span>
+    </li>
+  </ul>
+
+  <ul
+    [appHasPermission]="['PlantaoJudicial-ManterRegiaoPlantao']"
+    class="list-unstyled components m-0 list-group"
+  >
+    <li
+      class="section-menu small text-light fw-light text-start m-2 opacity-75"
+    >
+      Administração
+    </li>
+    <li
+      [appHasPermission]="['PlantaoJudicial-ManterRegiaoPlantao']"
+      [routerLink]="'/home/area-regiao'"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [routerLinkActive]="'active'"
+      class="cursor-pointer p-2 list-group-item d-flex justify-content-start align-items-center border-0 rounded text-light"
+      title="Ir para Configuração de Área e Região"
+    >
+      <fa-icon [icon]="faGear"></fa-icon>
+      <span class="ms-1">Configuração de Áreas e Regiões</span>
+    </li>
+  </ul>
+  <ul
+    class="list-unstyled components m-0 list-group"
+    [appHasPermission]="[
+      'PlantaoJudicial-ManterPlantao-1Grau',
+      'PlantaoJudicial-ManterPlantao-2Grau',
+      'PlantaoJudicial-ManterPlantao-TurmaRecursal'
+    ]"
+  >
+    <li
+      class="section-menu small text-light fw-light text-start m-2 opacity-75"
+    >
+      Plantão Judicial
+    </li>
+    <li
+      [appHasPermission]="['PlantaoJudicial-ManterPlantao-1Grau']"
+      [routerLink]="'/home/plantao'"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [routerLinkActive]="'active'"
+      class="cursor-pointer p-2 list-group-item d-flex justify-content-start align-items-center border-0 rounded text-light"
+      title="Ir para Cadastro de Plantão"
+    >
+      <fa-icon [icon]="faBuildingUser"></fa-icon>
+      <span class="ms-1">1ª Instância</span>
+    </li>
+    <li
+      [appHasPermission]="['PlantaoJudicial-ManterPlantao-2Grau']"
+      [routerLink]="'/home/plantao/lista-plantao-segunda-instancia'"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [routerLinkActive]="'active'"
+      class="cursor-pointer p-2 mt-2 list-group-item d-flex justify-content-start align-items-center border-0 rounded text-light"
+      title="Ir para Cadastro de Plantão"
+    >
+      <fa-icon [icon]="faBuildingUser"></fa-icon>
+      <span class="ms-1">2ª Instância</span>
+    </li>
+    <li
+      [appHasPermission]="['PlantaoJudicial-ManterPlantao-TurmaRecursal']"
+      [routerLink]="'/home/plantao/lista-plantao-turma-recursal'"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [routerLinkActive]="'active'"
+      class="cursor-pointer p-2 mt-2 list-group-item d-flex justify-content-start align-items-center border-0 rounded text-light"
+      title="Ir para Turma Recursal"
+    >
+      <fa-icon [icon]="faBuildingUser"></fa-icon>
+      <span class="ms-1">Turma Recursal</span>
+    </li>
+  </ul>
+</nav>

@@ -1,0 +1,151 @@
+<div class="container">
+  <app-breadcrumb
+    [paginaAnterior]="'Plantão Judicial'"
+    [paginaAtual]="'Lista de Plantões Turma Recursal'"
+    [proximaPagina]="'Cadastrar Plantão Turma Recursal'"
+  >
+  </app-breadcrumb>
+  <div class="d-flex align-items-center justify-content-end m-3">
+    <button
+      [disabled]="true"
+      type="button"
+      class="btn btn-primary"
+      style="background: var(--bs-primary)"
+      label="Show"
+    >
+      Cadastrar Plantão Turma Recursal
+      <fa-icon [icon]="faPlus"></fa-icon>
+    </button>
+  </div>
+  <div class="container">
+    <div class="card m-1 shadow">
+      <app-botao-voltar-header-card
+        [url]="'/home/plantao/lista-plantao-turma-recursal'"
+        [texto]="'Voltar para listagem'"
+      ></app-botao-voltar-header-card>
+      <div class="card-title p-4 pb-0 pb-3 fw-bold">
+        {{
+          authorizationService.plantaoJudicialTurmaRecursal()
+            ? "Preencha os campos para realizar o cadastro"
+            : "Usuário sem permissões para realizar o cadastro de plantão!"
+        }}
+      </div>
+      <div
+        class="card-body p-4"
+        *ngIf="authorizationService.plantaoJudicialTurmaRecursal()"
+      >
+        <div class="row">
+          <div class="row">
+            <div class="col-lg-3 mb-0 mb-3">
+              <label>Data Inicial*</label>
+              <div class="input-group">
+                <input
+                  type="date"
+                  class="form-control"
+                  placeholder="Data Inicial"
+                  [(ngModel)]="turmaRecursal.dataInicial"
+                  [ngClass]="{
+                    'is-valid': turmaRecursal.dataInicial != ''
+                  }"
+                />
+              </div>
+            </div>
+            <div class="col-lg-3 mb-0 mb-3">
+              <label>Data Final*</label>
+              <div class="input-group">
+                <input
+                  type="date"
+                  class="form-control"
+                  placeholder="Data Final"
+                  [(ngModel)]="turmaRecursal.dataFinal"
+                  [ngClass]="{
+                    'is-valid': turmaRecursal.dataFinal != ''
+                  }"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6 mb-0 mb-3">
+              <label>Órgão Julgador*</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Descrição do Órgão Julgador"
+                  [(ngModel)]="turmaRecursal.orgaoJulgador"
+                  [ngClass]="{
+                    'is-valid': turmaRecursal.orgaoJulgador != ''
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 mb-0 mb-3">
+              <label>Magistrado*</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Nome do Magistrado"
+                  [(ngModel)]="turmaRecursal.magistrado"
+                  [ngClass]="{
+                    'is-valid': turmaRecursal.magistrado != ''
+                  }"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4 mb-0 mb-3">
+              <label>Telefone do Plantão*</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="(00) 0 0000-0000"
+                  [(ngModel)]="turmaRecursal.telefonePlantao"
+                  [mask]="'(00) 0 0000-0000'"
+                  [ngClass]="{
+                    'is-valid': validadorTelefone(
+                      turmaRecursal.telefonePlantao
+                    ),
+                    'is-invalid':
+                      !validadorTelefone(turmaRecursal.telefonePlantao) &&
+                      turmaRecursal.telefonePlantao != ''
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end me-4">
+          <div class="border-bottom-0">
+            <button
+              type="button"
+              title="Limpar campos"
+              class="mt-3 btn btn-light border btn-block"
+              (click)="limparCampos()"
+            >
+              Limpar Campos
+            </button>
+            <button
+              type="button"
+              title="Salvar"
+              [disabled]="loading || !formInvalid()"
+              (click)="salvar()"
+              [ngClass]="{
+                'mt-3 btn btn-success btn-block ms-3': true
+              }"
+            >
+              <span
+                [ngClass]="{ 'spinner-grow spinner-grow-sm me-1': loading }"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span [ngClass]="{ 'visually-hidden': loading }"></span
+              >{{ loading ? "Salvando..." : "Salvar" }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

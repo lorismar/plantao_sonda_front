@@ -1,0 +1,35 @@
+/* Estilos para centralizar o conteúdo */
+body,
+html {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  text-align: center;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.h1 {
+  font-size: 2em;
+  margin: 0;
+  color: #333;
+}
+.logo {
+  margin-bottom: 20px; /* Espaço entre a imagem e o texto */
+}

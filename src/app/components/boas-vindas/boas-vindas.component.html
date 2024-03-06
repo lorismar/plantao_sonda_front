@@ -1,0 +1,27 @@
+<div
+  class="container"
+  style="padding-top: 10dvw"
+  *ngIf="this.roles.hasOwnProperty('plantaojudicial')"
+>
+  <div class="card" style="background-color: #272d4b">
+    <div class="row" style="display: flex; justify-content: center">
+      <img
+        src="assets/logo-tjro.png"
+        alt="logo tjro"
+        pTooltip="TJRO"
+        class="logo opacity-500"
+        width="2400"
+        style="align-self: center"
+      />
+    </div>
+    <div class="card-body">
+      <span class="h1 fw-bold text-white">Sistema de Plantão Judicial</span>
+    </div>
+  </div>
+  <div class="row">
+    <span class="pt-4"
+      ><fa-icon class="me-2" [icon]="faAngleLeft"></fa-icon>Selecione um dos
+      localizadores ao lado para iniciar</span
+    >
+  </div>
+</div>

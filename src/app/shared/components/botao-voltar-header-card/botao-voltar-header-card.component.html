@@ -1,0 +1,16 @@
+<div class="card-header bg-white border-bottom-0 mt-2">
+  <div
+    *ngIf="url; else semURL"
+    [routerLink]="url"
+    class="btn btn-sm bg-transparent fw-bold border-0 text-secondary"
+  >
+    <fa-icon [icon]="faAngleLeft"></fa-icon>
+    <b class title="Voltar" style="cursor: pointer"> {{ texto }}</b>
+  </div>
+  <ng-template #semURL>
+    <div class="card-title m-0 text-secondary justify-items-center">
+      <fa-icon *ngIf="iconVoltarLeft" [icon]="faAngleLeft"></fa-icon>
+      <b> {{ texto }} </b>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,20 @@
+<div>
+  <label *ngIf="!obrigatorio">{{ label }}</label
+  ><label *ngIf="obrigatorio" style="display: inline-block">
+    {{ label }}
+    <h6 class="text-danger" style="display: inline; margin: 0">*</h6>
+  </label>
+
+  <div class="input-group">
+    <input
+      [type]="typeInput"
+      [class]="classeInput"
+      [placeholder]="placeholder"
+      [(ngModel)]="ngModelInput"
+      [ngClass]="{
+        'is-valid': validador()
+      }"
+      [mask]="mask"
+    />
+  </div>
+</div>

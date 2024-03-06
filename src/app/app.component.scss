@@ -1,0 +1,8 @@
+.custom-overlay::before {
+  background: black !important; /* Ajuste a opacidade aqui */
+}
+
+/* Adicione este estilo em sua folha de estilos CSS */
+.no-animation {
+  animation: none !important;
+}

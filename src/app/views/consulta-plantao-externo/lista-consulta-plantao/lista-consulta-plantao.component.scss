@@ -1,0 +1,12 @@
+.segunda-instancia {
+  color: #378bb1;
+}
+
+.externo {
+  color: #6f42c1;
+}
+/* Define a largura máxima para cada opção */
+.ui-dropdown .ui-dropdown-item {
+  max-width: 200px; /* Ajuste conforme necessário */
+  overflow-wrap: break-word; /* Permite a quebra de palavras longas */
+}
